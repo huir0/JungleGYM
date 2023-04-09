@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+    <title>JungleGYM</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <style>
+        .wrap {
+            width: 400px;
+            height: 200px;
+            margin: auto;
+        }
+
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .mytitle {
+            width: 100%;
+            height: 250px;
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/static/정글_뒷배경-removebg-preview.png');
+
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+
+        }
+
+        .footer2 {
+            width: 100% ;
+           
+
+            background-color: #05D182;
+            
+            box-sizing: border-box;
+
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mytitle>button {
+            width: 200px;
+            height: 50px;
+            background-color: transparent;
+            color: white;
+            border-radius: 50px;
+            border: 1px solid white;
+            margin-top: 10px;
+        }
+
+        .mytitle>button:hover {
+            border: 2px solid white;
+        }
+
+        .mycomment {
+            color: gray;
+        }
+
+        .mypost {
+            width: 95%;
+            max-width: 800px;
+            margin: 20px auto 0px auto;
+            padding: 20px;
+            box-shadow: 0px 0px 3px 0px gray;
+        }
+
+        .mybtns {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .mybtns>button {
+            margin-right: 10px;
+        }
+
+        .wrap-search {
+            width: 100%;
+
+            margin: auto;
+            margin-top: 30px;
+
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrap-in {
+            width: 190px;
+            margin: auto;
+
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mypost .input-group-text {
+            margin-right: 15px;
+        }
+
+        .modal-card-body {
+            margin: auto;
+            width: 640px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-columns {
+            margin:auto;
+        }
+    </style>
+</head>
+
+<script>
+// 1. F5 화면 초기화
+$(document).ready(() => showMemos())
+
+// 2. 모달창 오픈
+function modal_open(card_id){
+    $(`#subform-${card_id}`).show();
+}
+// 3. 모달창 클로즈
+function modal_close(card_id){
+    $(`#subform-${card_id}`).hide();
+}
+
+// 4. 1(화면 초기화 시) 실행되는 함수
+function showMemos() {
+    // 2) /main/listing에 GET 방식으로 메모 정보를 요청한다.
+    $.ajax({
+        type: "GET",
+        url: "/main",
+        data: {},
+        success: function () { 
+                alert('showMemos() 리스팅!!') // ★★ 메시지 바꾸기!!
+                }
+            })
+}
+
+// 5. 생성 버튼 (폼 열기 / 닫기)
+function open_create_box(){
+    $('#post-box').show()
+}
+function close_create_box(){
+    $('#post-box').hide()
+}
+
+// 6. 게시글 카드 생성 - 필터 적용
+function getCheckboxValue() {
+    let result = {}
+
+    // 선택된 목록 가져오기
+    $('#levelFilter').find('input:checked').each(function(index){
+        result['level'] = $(this).val();
+    })
+    $('#sportFilter').find('input:checked').each(function(index){
+        result['sport'] = $(this).val();
+    })
+    $('#timeFilter').find('input:checked').each(function(index){
+        result['time'] = $(this).val();
+    })
+    $('#spotFilter').find('input:checked').each(function(index){
+        result['spot'] = $(this).val();
+    })
+    $('#genderFilter').find('input:checked').each(function(index){
+        result['gender'] = $(this).val();
+    })
+    result['text'] = $('#textFilter').val();
+    
+    return result;
+}
+// 6. 게시글 카드 생성 - 메인
+function postMemo() {
+    // 1) 유저가 입력한 데이터를 가져온다. 
+    var data = new FormData();
+    var result = getCheckboxValue();
+    for (var key in result) {
+        data.append(key, result[key]);
+    }
+    var token = sessionStorage.getItem('token');
+    data.append('token',token)
+
+    // 2) /main/posting에 POST 방식으로 (data에 각 정보들을 담아) 카드 생성을 요청한다.
+    $.ajax({
+        type: "POST",
+            url: "/main/posting",
+            data: data, 
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    alert("성공했습니다!")
+                    window.location.reload();
+                } else {
+                    alert("포스팅 실패!")
+            }
+        }
+    })
+
+}
+
+// 7. 조건 검색 - 필터 조건 하나로 합치기
+let level ='';
+let sport ='';
+let time ='';
+let spot ='';
+let gender ='';
+const showValue1 = (target) => {
+        level = target.value;
+}
+const showValue2 = (target) => {
+        sport = target.value;
+}
+const showValue3 = (target) => {
+        time = target.value;
+}
+const showValue4 = (target) => {
+        spot = target.value;
+}
+const showValue5 = (target) => {
+        gender = target.value;
+}
+
+// 7. 조건 검색 - 메인
+function findMemo() {
+
+    $('#card-list').html("");   
+    
+    $.ajax({
+        type: "POST",
+        url: "/main/finding",
+        data: {
+        'level': level,
+        'sport': sport,
+        'time': time,
+        'spot': spot,
+        'gender': gender
+        },
+        success: function(response) {
+            if (response['result'] == "success"){
+                    alert("조건 검색 성공!")
+                    let memos = response["memos"];
+                    console.log(memos)
+                    for (let i = 0; i < memos.length; i++) {
+                        // 4) makeCard()를 이용해 HTML을 붙인다. →→
+                        makeCard(memos[i]["level"], memos[i]["sport"], memos[i]["time"], memos[i]["spot"], memos[i]['gender'], memos[i]['text'], memos[i]['cnt'], memos[i]['card_id'], memos[i]['creator']);
+                    }
+                    
+                }
+            }
+        }
+    )
+}
+// →→ makeCard() 함수 : 매개변수로 title/text/like/id를 받아 card를 만든 후, #card-list 부분에 append 한다.
+function makeCard(level, sport, time, spot, gender, text, cnt, card_id, creator) {
+            let temp_html = `<div class="container row-cols-md-3" style="display: flexbox; margin-top: 50px;">
+            <div class="wrap" id="card-id-${card_id}">
+                <a onclick="modal_open('${card_id}')">
+                    <article class="message is-success" id="mainform-${card_id}">
+                        <div class="message-header">
+                            <p>${creator}</p>
+                        </div>
+                        <div class="message-body">
+                            ${text}
+                        </div>
+                    </article>
+                </a>
+            </div>
+
+            <div class="modal" id="subform-${card_id}">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">게시글 정보</p>
+
+                    </header>
+                    <section class="modal-card-body">
+                        <p>레벨 : ${level}</p>
+                        <p>종목 : ${sport}</p>
+                        <p>시간 : ${time}</p>
+                        <p>장소 : ${spot}</p>
+                        <p>성별 : ${gender}</p>
+
+                        <p>총 ${cnt}명 신청</p>
+                    </section>
+                    <footer class="modal-card-foot">
+                        <button class="button is-success" onclick="join('${card_id}')">참가하기</button>
+                        <button class="button" onclick="modal_close('${card_id}')">닫기</button>
+                    </footer>;
+                </div>
+            </div>`;
+
+            $("#card-list").append(temp_html);
+}
+
+function logout() {
+    sessionStorage.clear(); // token 삭제
+    window.location.href = '/login'; // login 페이지로 이동
+}
+
+// 참가하기 기능
+function join(card_id) {
+    token = sessionStorage.getItem('token');
+    $.ajax({
+        type: "POST",
+        url: "/main/join",
+        data: {'card_id' : card_id, 'token': token},
+        success: function (response) {
+            if (response['result'] == 'success') {
+                alert('참가완료!')
+                window.location.reload()
+            }
+            else { alert('모집이 마감되었습니다.')}
+                window.location.reload()
+        }
+    })
+}
+</script>
+
+<body>
+    <div class="mytitle">
+        <h1>운동메이트 매칭 서비스- 정글 Gym</h1>
+        <button onclick="open_create_box()">게시글 생성</button>
+        <button onclick="logout()">로그아웃</button>
+    </div>
+    <div class="mypost" id="post-box" style="display: none">
+
+        <div class="input-group mb-3" id="levelFilter">
+            <label class="input-group-text" for="inputGroupSelect01">레벨</label>
+            <label><input type="radio" name="level" value="초심자" /> 초심자
+                <label><input type="radio" name="level" value="중급자" /> 중급자
+                    <label><input type="radio" name="level" value="상급자" /> 상급자
+                        <label><input type="radio" name="level" value="상관없음"  checked /> 상관없음
+        </div>
+
+        <div class="input-group mb-3" id="sportFilter">
+            <label class="input-group-text" for="inputGroupSelect01">종목</label>
+            <label><input type="radio" name="sport" value="헬스" /> 헬스
+                <label><input type="radio" name="sport" value="런닝" /> 런닝
+                    <label><input type="radio" name="sport" value="수영" /> 수영
+                        <label><input type="radio" name="sport" value="필라테스" /> 필라테스
+                            <label><input type="radio" name="sport" value="푸쉬업" /> 푸쉬업
+                                <label><input type="radio" name="sport" value="식단관리만" /> 식단관리만
+                                    <label><input type="radio" name="sport" value="상관없음" checked /> 상관없음
+        </div>
+
+        <div class="input-group mb-3" id="timeFilter">
+            <label class="input-group-text" for="inputGroupSelect01">시간</label>
+            <label><input type="radio" name="time" value="오전" /> 오전
+                <label><input type="radio" name="time" value="점심" /> 점심
+                    <label><input type="radio" name="time" value="오후" /> 오후
+                        <label><input type="radio" name="time" value="저녁" /> 저녁
+                            <label><input type="radio" name="time" value="상관없음" checked /> 상관없음
+        </div>
+
+        <div class="input-group mb-3" id="spotFilter">
+            <label class="input-group-text" for="inputGroupSelect01">모임 장소</label>
+            <label><input type="radio" name="spot" value="걸어서 5분" /> 걸어서 5분
+                <label><input type="radio" name="spot" value="걸어서 10분" /> 걸어서 10분
+                    <label><input type="radio" name="spot" value="걸어서 15분" /> 걸어서 15분
+                        <label><input type="radio" name="spot" value="걸어서 20분" /> 걸어서 20분
+                            <label><input type="radio" name="spot" value="상관없음" checked /> 상관없음
+        </div>
+
+        <div class="input-group mb-3" id="genderFilter">
+            <label class="input-group-text" for="inputGroupSelect01">성별</label>
+            <label><input type="radio" name="gender" value="남자만" /> 남자만
+                <label><input type="radio" name="gender" value="여자만" /> 여자만
+                    <label><input type="radio" name="gender" value="상관없음" checked /> 상관없음
+        </div>
+
+        <div class="form-floating">
+            <textarea class="textarea is-success" placeholder="Success textarea" id="textFilter"></textarea>
+        </div>
+
+        <div class="mybtns">
+            <button type="button" class="btn btn-dark" onClick="postMemo()">모집하기</button>
+            <button onclick="close_create_box()" type="button" class="btn btn-outline-dark">닫기</button>
+        </div>
+    </div>
+
+    <!-- 검색 필터 -->
+    <div class="wrap-search">
+        <div class="wrap-in">
+            <div class="input-group mb-3" id="levelFilter_find">
+                <label class="input-group-text" for="inputGroupSelect01">레벨</label>
+                <div class="control">
+                    <select onchange="showValue1(this)" class="select" id="MySelect">
+                        <option selected>-- 선택하기 --</option>
+                        <option value="초심자">초심자</option>
+                        <option value="중급자">중급자</option>
+                        <option value="상급자">상급자</option>
+                        <option value="전문가">전문가</option>
+                        <option value="선수출신">선수출신</option>
+                        <option value="상관없음">상관없음</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group mb-3" id="sportFilter_find">
+                <label class="input-group-text" for="inputGroupSelect01">종목</label>
+                <div class="control">
+                    <select onchange="showValue2(this)" class="select" id="MySelect">
+                        <option selected>-- 선택하기 --</option>
+                        <option value="헬스">헬스</option>
+                        <option value="런닝">런닝</option>
+                        <option value="수영">수영</option>
+                        <option value="필라테스">필라테스</option>
+                        <option value="푸쉬업">푸쉬업</option>
+                        <option value="식단관리만">식단관리만</option>
+                        <option value="상관없음">상관없음</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group mb-3" id="timeFilter_find">
+                <label class="input-group-text" for="inputGroupSelect01">시간</label>
+                <div class="control">
+                    <select onchange="showValue3(this)" class="select" id="MySelect">
+                        <option selected>-- 선택하기 --</option>
+                        <option value="오전">오전</option>
+                        <option value="점심">점심</option>
+                        <option value="오후">오후</option>
+                        <option value="저녁">저녁</option>
+                        <option value="상관없음">상관없음</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group mb-3" id="spotFilter_find">
+                <label class="input-group-text" for="inputGroupSelect01">장소</label>
+                <div class="control">
+                    <select onchange="showValue4(this)" class="select" id="MySelect">
+                        <option selected>-- 선택하기 --</option>
+                        <option value="걸어서 5분">걸어서 5분</option>
+                        <option value="걸어서 10분">걸어서 10분</option>
+                        <option value="걸어서 15분">걸어서 15분</option>
+                        <option value="걸어서 20분">걸어서 20분</option>
+                        <option value="상관없음">상관없음</option>
+                    </select>
+                </div>
+            </div>
+            <div class="input-group mb-3" id="genderFilter_find">
+                <label class="input-group-text" for="inputGroupSelect01">성별</label>
+                <div class="control">
+                    <select onchange="showValue5(this)" class="select" id="MySelect">
+                        <option selected>-- 선택하기 --</option>
+                        <option value="남자만">남자만</option>
+                        <option value="여자만">여자만</option>
+                        <option value="상관없음">상관없음</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mybtns">
+                <button type="button" class="btn btn-dark" onClick="findMemo()">검색하기</button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="card-list" class="card-columns">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+
+<!-- FOOTER -->
+<div class="footer2">
+    <h1>Red반 2팀</h1>
+</div>
+
+</body>
+
+</html>

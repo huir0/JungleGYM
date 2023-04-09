@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <title>JungleGYM</title>
+
+    <script>
+        function Login() {
+            $.ajax({
+                type: "POST",
+                url: "/login",
+                data: { id_give: $('#id').val(), pw_give: $('#pw').val() },
+
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        // 로그인이 정상적으로 되면, 토큰을 받아옵니다.
+                        // 이 토큰을 mytoken이라는 키 값으로 쿠키에 저장합니다.
+
+                        sessionStorage.setItem('token', response['token']);
+
+                        window.location.href = '/main'
+
+                        // alert('로그인 완료!')
+
+                    } else {
+                        // 로그인이 안되면 에러메시지를 띄웁니다.
+                        alert(response['msg'])
+                    }
+                }
+            })
+
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-size: 14px;
+        }
+
+        .v1_7 {
+            position: absolute;
+            width: 76px;
+            height: 142px;
+            left: 560px;
+            top: 82px;
+
+            background: #E0E0E0;
+            border: 30px solid #16A085;
+            border-radius: 38px;
+        }
+
+        .v2_36 {
+            position: absolute;
+            width: 82px;
+            height: 142px;
+            left: 809px;
+            top: 82px;
+
+            background: #E0E0E0;
+            border: 30px solid #16A085;
+            border-radius: 41px;
+        }
+
+        .v1_12 {
+            width: 566px;
+            color: rgba(22, 160, 133, 1);
+            position: absolute;
+            top: 317px;
+            left: 470px;
+            font-family: Inter;
+            font-weight: Regular;
+            font-size: 80px;
+            opacity: 1;
+            text-align: left;
+        }
+
+        .v1_26 {
+            width: 389px;
+            color: rgba(22, 160, 133, 1);
+            position: absolute;
+            top: 250px;
+            left: 551px;
+            font-family: Inter;
+            font-weight: Regular;
+            font-size: 60px;
+            opacity: 1;
+            text-align: left;
+        }
+
+        .v1_13 {
+            width: 446px;
+            height: 442px;
+            background: rgba(217, 217, 217, 1);
+            opacity: 1;
+            position: absolute;
+            top: 451px;
+            left: 488px;
+            border: 15px solid rgba(22, 160, 133, 1);
+            overflow: hidden;
+        }
+
+        .v2_31 {
+            width: 100px;
+            height: 100px;
+            background: url("../images/v2_31.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            opacity: 1;
+            position: absolute;
+            top: 82px;
+            left: 132px;
+            overflow: hidden;
+        }
+
+        .v2_35 {
+            width: 242px;
+            height: 33px;
+            background: rgba(22, 160, 133, 1);
+            opacity: 1;
+            position: absolute;
+            top: 137px;
+            left: 615px;
+            overflow: hidden;
+        }
+        .wrap{
+            width: 1000px;
+            height: 1000px;
+            margin: auto;
+            margin-left: 230px;
+            position: relative;
+        }
+        .loginbox{
+            width:300px;
+            margin: auto;
+            margin-top: 100px;
+        }
+        .saida{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px ;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+       
+        <div class="v1_5"></div>
+        <div class="v1_7"></div>
+        <div class="v1_8"></div>
+        <div class="v2_36"></div>
+        <div class="v1_12">JUNGLE GYM</div>
+        <div class="v1_26">Welcome to</div>
+        <div class="v1_13">
+
+            <div class="loginbox">
+                
+                <input class="input is-success" type="text" id="id" placeholder="ID를 입력해주세요.">
+                <br></br>
+                <input class="input is-success" type="password" id="pw" placeholder="Password를 입력해주세요." >
+                <br>
+                
+                <div class="saida">
+                <button class="button is-medium is-success is-light" onclick="Login()" >로그인</button>
+
+                <button class="button is-medium is-danger is-light" onclick="window.location.href='/sign_up'" style="margin-left: 20px;" >회원가입</button>
+                </div>
+            </div>
+        </div>
+        <div class="v2_31"></div>
+        <div class="v2_35"></div>
+
+    </div>
+
+
+
+</body>
+
+</html>

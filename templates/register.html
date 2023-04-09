@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <title>JungleGYM</title>
+
+    <script>
+        function ID_Check() {
+            let id = $('#id').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/idcheck',
+                data: { 'id_give': id },
+                success: function (response) {
+                    alert(response['msg'])
+                }
+            })
+        }
+
+
+        function Register() {
+            let name = $('#name').val()
+            let id = $('#id').val()
+            let pw = $('#pw').val()
+            let pw2 = $('#pw2').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/register',
+                data: { 'name_give': name, 'id_give': id, 'pw_give': pw, 'pw2_give': pw2 },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg'])
+                        window.location.href = '/login'
+                    } else {
+                        alert(response['msg'])
+                    }
+                }
+            })
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-size: 14px;
+        }
+
+        .register_form{
+            width: 800px;
+        }
+
+        .v1_22 {
+            width: 522px;
+            color: rgba(22, 160, 133, 1);
+            position: absolute;
+            top: 112px;
+            left: 612px;
+            font-family: Inter;
+            font-weight: Regular;
+            font-size: 80px;
+            opacity: 1;
+            text-align: left;
+        }
+
+        .v1_24 {
+            width: 799px;
+            height: 544px;
+            background: rgba(217, 217, 217, 1);
+            opacity: 1;
+            position: absolute;
+            top: 390px;
+            left: 314px;
+            border: 15px solid rgba(22, 160, 133, 1);
+            overflow: hidden;
+        }
+
+        .v1_27 {
+            width: 221px;
+            color: rgba(22, 160, 133, 1);
+            position: absolute;
+            top: 300px;
+            left: 907px;
+            font-family: Inter;
+            font-weight: Regular;
+            font-size: 60px;
+            opacity: 1;
+            text-align: left;
+        }
+
+        .v2_37 {
+            position: absolute;
+            width: 58px;
+            height: 114px;
+            left: 320px;
+            top: 112px;
+
+            background: #E0E0E0;
+            border: 17px solid #16A085;
+            border-radius: 29px;
+        }
+
+        .v2_38 {
+            position: absolute;
+            width: 62px;
+            height: 114px;
+            left: 520px;
+            top: 112px;
+
+            background: #E0E0E0;
+            border: 17px solid #16A085;
+            border-radius: 31px;
+        }
+
+        .v2_39 {
+            width: 183px;
+            height: 27px;
+            background: rgba(22, 160, 133, 1);
+            opacity: 1;
+            position: absolute;
+            top: 156px;
+            left: 370px;
+            overflow: hidden;
+        }
+        .register_form{
+            width: 500px;
+            margin:auto;
+            margin-top: 100px;
+        }
+        .colla{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            margin-right: 35px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        
+
+        <div class="v1_18"></div>
+        <div class="v1_22">JUNGLE GYM</div>
+        <div class="v1_24">
+
+            <div class="register_form">
+                <input class="input is-success" type="text" id="name" placeholder="이름을 입력해주세요." >
+                <br></br>
+                <input class="input is-success" type="text" id="id" placeholder="ID를 입력해주세요." >
+                <br>
+                <button class="button is-success" onclick="ID_Check()">ID 중복체크</button>
+                <br></br>
+              
+
+                <input class="input is-success" type="password" id="pw" placeholder="Password를 입력해주세요." >
+                <br></br>
+                <input class="input is-success" type="password" id="pw2" placeholder="Password 확인을 입력해주세요." >
+                <br></br>
+                <br></br>
+                <div class="colla">
+                <button class="button is-success"  onclick="Register()" style="margin-right: 10px; ">회원가입</button>
+                
+                <button class="button is-danger" onclick="window.location.href='/login'">닫기</button>
+                </div>
+            </div>
+        </div>
+        <div class="v1_27">sign up</div>
+        <div class="v2_37"></div>
+        <div class="v2_38"></div>
+        <div class="v2_39"></div>
+        <div class="v2_31"></div>
+        <div class="v2_35"></div>
+
+       
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    {% for memo in memos %}
+        <div class="container row-cols-md-3" style="display: flexbox; margin-top: 50px;">
+            <div class="wrap" id="card-id-{{ memo.card_id }}">
+                <a onclick="modal_open('{{memo.card_id}}')">
+                    <article class="message is-success" id="mainform-{{ memo.card_id }}">
+                        <div class="message-header">
+                            <p>{{ memo.creator }}</p>
+                        </div>
+                        <div class="message-body">
+                            {{ memo.text }}
+                        </div>
+                    </article>
+                </a>
+            </div>
+
+            <div class="modal" id="subform-{{ memo.card_id }}">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title">게시글 정보</p>
+
+                        <button class="delete" aria-label="close" onclick="modal_close()"></button>
+                    </header>
+                    <section class="modal-card-body">
+                        <p>레벨 : {{ memo.level }}</p>
+                        <p>종목 : {{ memo.sport }}</p>
+                        <p>시간 : {{ memo.time }}</p>
+                        <p>장소 : {{ memo.spot }}</p>
+                        <p>성별 : {{ memo.gender }}</p>
+
+                        <p>총 {{ memo.cnt }}명 신청</p>
+                    </section>
+                    <footer class="modal-card-foot">
+                        <button class="button is-success" onclick="">참가하기</button>
+                        <button class="button" onclick="modal_close('{{ memo.card_id }}')">닫기</button>
+                    </footer>;
+                </div>
+            </div>
+    {% endfor %}
+{% endblock %}
